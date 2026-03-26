@@ -58,11 +58,13 @@ while active:
             precio = float(input("Precio: "))
             cantidad = int(input("Cantidad: "))
         except ValueError:
-            print("Precio o cantidad inválidos")
+            print("\nPrecio o cantidad inválidos")
+            input("\nPresione enter para volver al menu")
+            os.system('clear')
             continue
 
         if precio < 0 or cantidad < 0:
-            print("No se permiten valores negativos")
+            print("\nNo se permiten valores negativos")
             continue
 
         agregar_producto(inventario, nombre, precio, cantidad)
@@ -87,6 +89,8 @@ while active:
 
 
     elif opcion == 4:
+        os.system('clear')
+        print("\n","="*30,"Actualizar un producto","="*30,"\n")
         nombre = input("Nombre del producto a actualizar: ")
 
         try:
@@ -96,12 +100,16 @@ while active:
             nuevo_precio = float(precio) if precio else None
             nueva_cantidad = int(cantidad) if cantidad else None
         except ValueError:
-            print("Datos inválidos")
+            print("\nDatos inválidos")
+            input("\nPresione enter para volver al menu")
+            os.system('clear')
             continue
 
         actualizar_producto(inventario, nombre, nuevo_precio, nueva_cantidad)
 
     elif opcion == 5:
+        os.system('clear')
+        print("\n","="*30,"Eliminar un producto","="*30,"\n")
         nombre = input("Nombre del producto a eliminar: ")
         eliminar_producto(inventario, nombre)
 

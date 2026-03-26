@@ -6,6 +6,13 @@ Cada producto contiene nombre, precio y cantidad.
 """
 import os
 
+def clear_screen():
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")
+
+
 def agregar_producto(inventario, nombre, precio, cantidad):
     producto = {
         "nombre": nombre,
@@ -14,47 +21,54 @@ def agregar_producto(inventario, nombre, precio, cantidad):
     }
 
     inventario.append(producto)
-    print("Producto agregado correctamente")
-    input("Presione enter para volver al menu")
-    os.system('clear')
+    print("\nProducto agregado correctamente")
+    input("\nPresione enter para volver al menu")
+    clear_screen()
 
 def mostrar_inventario (inventario):
     """Muestra todos los productos almacenados en el inventario"""
 
     if not inventario:
-        print("No hay nada en el inventario")
-        input("Presione enter para volver al menu")
-        os.system('clear')
+        print("\nNo hay nada en el inventario")
+        input("\nPresione enter para volver al menu")
+        clear_screen()
     else:
         print("\n--- INVENTARIO ---\n")
         for producto_registrado in inventario:
-            print("Producto:", producto_registrado["nombre"],
+            print("\nProducto:", producto_registrado["nombre"],
             "|Precio:", producto_registrado["precio"], 
             "|Cantidad:", producto_registrado["cantidad"],"\n")
-        input("Presione enter para volver al menu")
-        os.system('clear')
+        input("\nPresione enter para volver al menu")
+        clear_screen()
 
 def buscar_producto(inventario, nombre):
     for producto in inventario:
         if producto["nombre"].lower() == nombre.lower():
-            print(f"Producto encontrado: {producto}")
-            input("presione enter para volver al menu")
-            os.system('clear')
+            print(f"\nProducto encontrado: {producto}")
+            input("\npresione enter para volver al menu")
+            clear_screen()
             return producto
     else:
-        os.system('clear')
+        clear_screen()
         return None
 
 def actualizar_producto(inventario, nombre, nuevo_precio=None, nueva_cantidad=None):
     producto = buscar_producto(inventario, nombre)
     if producto is None:
+        print("\n","="*30,"Actualizar un producto","="*30,"\n")
         print("Producto no encontrado")
+        input("\nPresione enter para volver al menu")
+        clear_screen()
         return
     if nuevo_precio is not None:
         producto["precio"] = nuevo_precio
     if nueva_cantidad is not None:
         producto["cantidad"] = nueva_cantidad
+    print("\n","="*30,"Actualizar un producto","="*30,"\n")
     print("Producto actualizado")
+    input("\nPresione enter para volver al menu")
+    clear_screen()
+
 
 def eliminar_producto(inventario, nombre):
     for i, producto in enumerate(inventario):
