@@ -9,9 +9,8 @@ otros módulos.
 El programa se ejecuta de forma continua hasta que el usuario
 selecciona la opción de salida.
 """
-from services import (agregar_producto, mostrar_inventario, buscar_producto, actualizar_producto, eliminar_producto, calcular_estadisticas)
+from services import (agregar_producto, mostrar_inventario, buscar_producto, actualizar_producto, eliminar_producto, calcular_estadisticas, clear_screen)
 from archives import (guardar_csv, cargar_csv)
-import os
 
 inventario =[]
 
@@ -42,14 +41,28 @@ active=True
 while active:
     mostrar_menu()
 
-    try:
-        opcion = int(input("Seleccione una opción: "))
-    except ValueError:
-        print("Debe ingresar un número válido")
-        continue
+    valid = True
+    while valid:
+        try:
+            opcion = int(input("Seleccione una opción: "))
+            if 1 <= opcion <= 9:
+                valid = False
+            clear_screen()
+            print("\n","="*30,"MENU","="*30,"\n")
+            print("\nError: La opción debe estar entre 1 y 9.")
+            input("\nPresione enter para reintentar...")
+            clear_screen()
+        except ValueError:
+            clear_screen()
+            print("\n","="*30,"MENU","="*30,"\n")
+            print("\nError: Entrada inválida. Por favor, ingrese un número.")
+            input("\nPresione enter para reintentar...")
+            clear_screen()
+        
+        mostrar_menu()
 
     if opcion == 1:
-        os.system('clear')
+        clear_screen()
         print("\n","="*30,"Agregar un producto","="*30,"\n")
         
         nombre = input("Nombre: ")
@@ -60,7 +73,7 @@ while active:
         except ValueError:
             print("\nPrecio o cantidad inválidos")
             input("\nPresione enter para volver al menu")
-            os.system('clear')
+            clear_screen()
             continue
 
         if precio < 0 or cantidad < 0:
@@ -70,13 +83,13 @@ while active:
         agregar_producto(inventario, nombre, precio, cantidad)
 
     elif opcion == 2:
-        os.system('clear')
+        clear_screen()
 
         print("\n","="*30,"INVENTARIO","="*30,"\n")
         mostrar_inventario(inventario)
 
     elif opcion == 3:
-        os.system('clear')
+        clear_screen()
         print("\n","="*30,"Buscar un producto","="*30,"\n")
         nombre = input("Ingrese el nombre del producto: ")
         producto = buscar_producto(inventario, nombre)
@@ -85,11 +98,11 @@ while active:
             print("\n","="*30,"Buscar un producto","="*30,"\n")
             print("Producto no encontrado")
             input("Presione enter para volver al menu")
-            os.system('clear')
+            clear_screen()
 
 
     elif opcion == 4:
-        os.system('clear')
+        clear_screen()
         print("\n","="*30,"Actualizar un producto","="*30,"\n")
         nombre = input("Nombre del producto a actualizar: ")
 
@@ -102,13 +115,13 @@ while active:
         except ValueError:
             print("\nDatos inválidos")
             input("\nPresione enter para volver al menu")
-            os.system('clear')
+            clear_screen()
             continue
 
         actualizar_producto(inventario, nombre, nuevo_precio, nueva_cantidad)
 
     elif opcion == 5:
-        os.system('clear')
+        clear_screen()
         print("\n","="*30,"Eliminar un producto","="*30,"\n")
         nombre = input("Nombre del producto a eliminar: ")
         eliminar_producto(inventario, nombre)
@@ -117,16 +130,26 @@ while active:
         calcular_estadisticas(inventario)
 
     elif opcion == 7:
+        clear_screen()
+        print("\n","="*30,"Guardar CSV","="*30,"\n")
         ruta = input("Ingrese el nombre del archivo (ej: inventario.csv): ")
+        if not ruta.endswith(".csv"):
+            ruta += ".csv"
         guardar_csv(inventario, ruta)
 
     elif opcion == 8:
+        clear_screen()
+        print("\n","="*30,"CARGAR CSV","="*30,"\n")
         ruta = input("Ingrese la ruta del archivo CSV: ")
 
         nuevos_productos, errores = cargar_csv(ruta)
 
         if not nuevos_productos:
+            clear_screen()
+            print("\n","="*30,"CARGAR CSV","="*30,"\n")
             print("No se cargaron productos")
+            input("\nPresione enter para volver al menu")
+            clear_screen()
             continue
 
         decision = input("¿Sobrescribir inventario actual? (S/N): ").lower()
@@ -135,8 +158,12 @@ while active:
             inventario.clear()
             inventario.extend(nuevos_productos)
             print("Inventario reemplazado")
+            input("\nPresione enter para volver al menu")
+            clear_screen()
 
-        else:  # Fusión
+        
+        else:  
+            
             for nuevo in nuevos_productos:
                 existente = buscar_producto(inventario, nuevo["nombre"])
 
@@ -145,12 +172,17 @@ while active:
                     existente["precio"] = nuevo["precio"]
                 else:
                     inventario.append(nuevo)
-
+            print("\n","="*30,"CARGAR CSV","="*30,"\n")
             print("Inventario fusionado")
 
-        print(f"Productos cargados: {len(nuevos_productos)}")
-        print(f"Filas inválidas: {errores}")
+        print(f"\nProductos cargados: {len(nuevos_productos)}")
+        print(f"\nFilas inválidas: {errores}")
+        input("\nPresione enter para volver al menu")
+        clear_screen()
+
 
     elif opcion == 9:
+        clear_screen()
+        print("\n","="*30,"Salir","="*30,"\n")
         print("Saliendo del programa...")
         active=False

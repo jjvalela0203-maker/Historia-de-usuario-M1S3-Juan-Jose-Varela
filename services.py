@@ -12,7 +12,6 @@ def clear_screen():
     else:
         os.system("clear")
 
-
 def agregar_producto(inventario, nombre, precio, cantidad):
     producto = {
         "nombre": nombre,
@@ -29,7 +28,7 @@ def mostrar_inventario (inventario):
     """Muestra todos los productos almacenados en el inventario"""
 
     if not inventario:
-        print("\nNo hay nada en el inventario")
+        print("No hay nada en el inventario")
         input("\nPresione enter para volver al menu")
         clear_screen()
     else:
@@ -74,10 +73,14 @@ def eliminar_producto(inventario, nombre):
     for i, producto in enumerate(inventario):
         if producto["nombre"].lower() == nombre.lower():
             inventario.pop(i)
-            print("Producto eliminado")
+            print("\nProducto eliminado")
+            input("\nPresione enter para volver al menu")
+            clear_screen()
             return
     else:
         print("Producto no encontrado")
+        input("\nPresione enter para volver al menu")
+        clear_screen()
 
 def calcular_estadisticas(inventario):
     """
@@ -94,10 +97,15 @@ def calcular_estadisticas(inventario):
         dict | None: diccionario con las métricas calculadas si hay productos;
         en caso contrario, retorna None.
     """
-
+    clear_screen()
+    print("\n","="*30,"ESTADÍSTICAS DEL INVENTARIO","="*30,"\n")
     if not inventario:
         print("No hay productos para calcular estadísticas.\n")
+        input("\nPresione enter para volver al menu")
+        clear_screen()
         return None
+    
+
 
     # Lambda para calcular el subtotal de cada producto
     subtotal = lambda p: p["precio"] * p["cantidad"]
@@ -121,7 +129,8 @@ def calcular_estadisticas(inventario):
         },
     }
 
-    print("\n--- ESTADÍSTICAS DEL INVENTARIO ---")
+    clear_screen()
+    print("\n","="*30,"ESTADÍSTICAS DEL INVENTARIO","="*30,"\n")
     print(f"Productos registrados: {len(inventario)}")
     print(f"Unidades totales: {unidades_totales}")
     print(f"Valor total del inventario: ${valor_total:,.2f}")
@@ -133,5 +142,7 @@ def calcular_estadisticas(inventario):
         f"Producto con mayor stock: {producto_mayor_stock['nombre']} "
         f"({producto_mayor_stock['cantidad']} unidades)\n"
     )
+    input("\nPresione enter para volver al menu")
+    clear_screen()
 
     return estadisticas
