@@ -4,6 +4,7 @@ Módulo de inventario.
 Permite agregar productos al inventario y mostrarlos en pantalla.
 Cada producto contiene nombre, precio y cantidad.
 """
+import os
 
 def agregar_producto(inventario, nombre, precio, cantidad):
     producto = {
@@ -14,25 +15,35 @@ def agregar_producto(inventario, nombre, precio, cantidad):
 
     inventario.append(producto)
     print("Producto agregado correctamente")
+    input("Presione enter para volver al menu")
+    os.system('clear')
 
 def mostrar_inventario (inventario):
     """Muestra todos los productos almacenados en el inventario"""
 
     if not inventario:
         print("No hay nada en el inventario")
+        input("Presione enter para volver al menu")
+        os.system('clear')
     else:
         print("\n--- INVENTARIO ---\n")
         for producto_registrado in inventario:
             print("Producto:", producto_registrado["nombre"],
             "|Precio:", producto_registrado["precio"], 
             "|Cantidad:", producto_registrado["cantidad"],"\n")
+        input("Presione enter para volver al menu")
+        os.system('clear')
 
 def buscar_producto(inventario, nombre):
     for producto in inventario:
         if producto["nombre"].lower() == nombre.lower():
+            print(f"Producto encontrado: {producto}")
+            input("presione enter para volver al menu")
+            os.system('clear')
             return producto
-        else:
-            return None
+    else:
+        os.system('clear')
+        return None
 
 def actualizar_producto(inventario, nombre, nuevo_precio=None, nueva_cantidad=None):
     producto = buscar_producto(inventario, nombre)
@@ -51,8 +62,8 @@ def eliminar_producto(inventario, nombre):
             inventario.pop(i)
             print("Producto eliminado")
             return
-        else:
-            print("Producto no encontrado")
+    else:
+        print("Producto no encontrado")
 
 def calcular_estadisticas(inventario):
     """

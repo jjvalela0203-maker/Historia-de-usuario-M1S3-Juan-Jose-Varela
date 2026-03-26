@@ -11,11 +11,23 @@ selecciona la opción de salida.
 """
 from services import (agregar_producto, mostrar_inventario, buscar_producto, actualizar_producto, eliminar_producto, calcular_estadisticas)
 from archives import (guardar_csv, cargar_csv)
+import os
 
 inventario =[]
 
 def mostrar_menu():
-    print("\n--- MENÚ ---")
+    logo= r"""
+    ██╗███╗   ██╗██╗   ██╗███████╗███╗   ██╗████████╗ ██████╗ ██████╗ ██╗   ██╗    ███████╗██╗   ██╗███████╗████████╗███████╗███╗   ███╗
+    ██║████╗  ██║██║   ██║██╔════╝████╗  ██║╚══██╔══╝██╔═══██╗██╔══██╗╚██╗ ██╔╝    ██╔════╝╚██╗ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗ ████║
+    ██║██╔██╗ ██║██║   ██║█████╗  ██╔██╗ ██║   ██║   ██║   ██║██████╔╝ ╚████╔╝     ███████╗ ╚████╔╝ ███████╗   ██║   █████╗  ██╔████╔██║
+    ██║██║╚██╗██║╚██╗ ██╔╝██╔══╝  ██║╚██╗██║   ██║   ██║   ██║██╔══██╗  ╚██╔╝      ╚════██║  ╚██╔╝  ╚════██║   ██║   ██╔══╝  ██║╚██╔╝██║
+    ██║██║ ╚████║ ╚████╔╝ ███████╗██║ ╚████║   ██║   ╚██████╔╝██║  ██║   ██║       ███████║   ██║   ███████║   ██║   ███████╗██║ ╚═╝ ██║
+    ╚═╝╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝   ╚═╝       ╚══════╝   ╚═╝   ╚══════╝   ╚═╝   ╚══════╝╚═╝     ╚═╝
+                                                                                                                                    """
+    
+    
+    print(logo)
+    print("\n", "=" *30, "MENU", "=" *30, "\n")
     print("1. Agregar producto")
     print("2. Mostrar inventario")
     print("3. Buscar producto")
@@ -37,6 +49,9 @@ while active:
         continue
 
     if opcion == 1:
+        os.system('clear')
+        print("\n","="*30,"Agregar un producto","="*30,"\n")
+        
         nombre = input("Nombre: ")
 
         try:
@@ -53,16 +68,23 @@ while active:
         agregar_producto(inventario, nombre, precio, cantidad)
 
     elif opcion == 2:
+        os.system('clear')
+
+        print("\n","="*30,"INVENTARIO","="*30,"\n")
         mostrar_inventario(inventario)
 
     elif opcion == 3:
+        os.system('clear')
+        print("\n","="*30,"Buscar un producto","="*30,"\n")
         nombre = input("Ingrese el nombre del producto: ")
         producto = buscar_producto(inventario, nombre)
 
-        if producto:
-            print(producto)
-        else:
+        if not producto:
+            print("\n","="*30,"Buscar un producto","="*30,"\n")
             print("Producto no encontrado")
+            input("Presione enter para volver al menu")
+            os.system('clear')
+
 
     elif opcion == 4:
         nombre = input("Nombre del producto a actualizar: ")

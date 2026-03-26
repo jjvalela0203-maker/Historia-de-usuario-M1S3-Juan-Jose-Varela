@@ -1,7 +1,7 @@
 """
 Módulo de persistencia en archivos CSV.
 
-Permite guardar el inventario en un archivo CSV.
+Permite guardar y cargar el inventario en un archivo CSV.
 """
 
 def guardar_csv(inventario, ruta, incluir_header=True):
