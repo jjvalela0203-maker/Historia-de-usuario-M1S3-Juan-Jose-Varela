@@ -1,188 +1,204 @@
 """
-Módulo principal del sistema de gestión de inventario.
+Main module of the inventory management system.
 
-Este módulo controla el flujo de ejecución del programa mediante
-un menú interactivo. Permite al usuario agregar productos, mostrar
-el inventario y calcular estadísticas, utilizando funciones de
-otros módulos.
+This module controls the program execution flow through
+an interactive menu. It allows the user to add products,
+display the inventory, search, update, delete items, and
+calculate statistics using functions from other modules.
 
-El programa se ejecuta de forma continua hasta que el usuario
-selecciona la opción de salida.
+The program runs continuously until the user selects
+the exit option.
 """
-from services import (agregar_producto, mostrar_inventario, buscar_producto, actualizar_producto, eliminar_producto, calcular_estadisticas, clear_screen)
-from archives import (guardar_csv, cargar_csv)
 
-inventario =[]
+from services import (
+    add_product,
+    show_inventory,
+    search_product,
+    update_product,
+    delete_product,
+    calculate_stats,
+    clear_screen
+)
 
-def mostrar_menu():
-    logo= r"""
+from archives import (save_csv, read_csv)
+
+inventory = []
+
+
+def show_menu():
+    """
+    Displays the main menu of the inventory system.
+
+    This function prints the ASCII logo and the list of
+    available options for the user to interact with the system.
+    """
+    logo = r"""
     ██╗███╗   ██╗██╗   ██╗███████╗███╗   ██╗████████╗ ██████╗ ██████╗ ██╗   ██╗    ███████╗██╗   ██╗███████╗████████╗███████╗███╗   ███╗
     ██║████╗  ██║██║   ██║██╔════╝████╗  ██║╚══██╔══╝██╔═══██╗██╔══██╗╚██╗ ██╔╝    ██╔════╝╚██╗ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗ ████║
     ██║██╔██╗ ██║██║   ██║█████╗  ██╔██╗ ██║   ██║   ██║   ██║██████╔╝ ╚████╔╝     ███████╗ ╚████╔╝ ███████╗   ██║   █████╗  ██╔████╔██║
     ██║██║╚██╗██║╚██╗ ██╔╝██╔══╝  ██║╚██╗██║   ██║   ██║   ██║██╔══██╗  ╚██╔╝      ╚════██║  ╚██╔╝  ╚════██║   ██║   ██╔══╝  ██║╚██╔╝██║
     ██║██║ ╚████║ ╚████╔╝ ███████╗██║ ╚████║   ██║   ╚██████╔╝██║  ██║   ██║       ███████║   ██║   ███████║   ██║   ███████╗██║ ╚═╝ ██║
     ╚═╝╚═╝  ╚═══╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝   ╚═╝       ╚══════╝   ╚═╝   ╚══════╝   ╚═╝   ╚══════╝╚═╝     ╚═╝
-                                                                                                                                    """
-    
-    
-    print(logo)
-    print("\n", "=" *30, "MENU", "=" *30, "\n")
-    print("1. Agregar producto")
-    print("2. Mostrar inventario")
-    print("3. Buscar producto")
-    print("4. Actualizar producto")
-    print("5. Eliminar producto")
-    print("6. Estadísticas")
-    print("7. Guardar CSV")
-    print("8. Cargar CSV")
-    print("9. Salir")
+    """
 
-active=True
+    print(logo)
+    print("\n", "=" * 30, "MENU", "=" * 30, "\n")
+    print("1. Add product")
+    print("2. Show inventory")
+    print("3. Search product")
+    print("4. Update product")
+    print("5. Delete product")
+    print("6. Statistics")
+    print("7. Save CSV")
+    print("8. Load CSV")
+    print("9. Exit")
+
+
+active = True
+
 while active:
-    mostrar_menu()
+    show_menu()
 
     valid = True
     while valid:
         try:
-            opcion = int(input("Seleccione una opción: "))
-            if 1 <= opcion <= 9:
+            option = int(input("Select an option: "))
+            if 1 <= option <= 9:
                 valid = False
-            clear_screen()
-            print("\n","="*30,"MENU","="*30,"\n")
-            print("\nError: La opción debe estar entre 1 y 9.")
-            input("\nPresione enter para reintentar...")
-            clear_screen()
+
         except ValueError:
             clear_screen()
-            print("\n","="*30,"MENU","="*30,"\n")
-            print("\nError: Entrada inválida. Por favor, ingrese un número.")
-            input("\nPresione enter para reintentar...")
+            print("\n", "=" * 30, "MENU", "=" * 30, "\n")
+            print("\nError: Invalid input. Please enter a number.")
+            input("\nPress enter to retry...")
             clear_screen()
-        
-        mostrar_menu()
 
-    if opcion == 1:
+        show_menu()
+
+    if option == 1:
         clear_screen()
-        print("\n","="*30,"Agregar un producto","="*30,"\n")
-        
-        nombre = input("Nombre: ")
+        print("\n", "=" * 30, "Add a product", "=" * 30, "\n")
+
+        name = input("Name: ")
 
         try:
-            precio = float(input("Precio: "))
-            cantidad = int(input("Cantidad: "))
+            price = float(input("Price: "))
+            quantity = int(input("Quantity: "))
         except ValueError:
-            print("\nPrecio o cantidad inválidos")
-            input("\nPresione enter para volver al menu")
+            print("\nInvalid price or quantity")
+            input("\nPress enter to return to menu")
             clear_screen()
             continue
 
-        if precio < 0 or cantidad < 0:
-            print("\nNo se permiten valores negativos")
+        if price < 0 or quantity < 0:
+            print("\nNegative values are not allowed")
             continue
 
-        agregar_producto(inventario, nombre, precio, cantidad)
+        add_product(inventory, name, price, quantity)
 
-    elif opcion == 2:
+    elif option == 2:
         clear_screen()
+        print("\n", "=" * 30, "INVENTORY", "=" * 30, "\n")
+        show_inventory(inventory)
 
-        print("\n","="*30,"INVENTARIO","="*30,"\n")
-        mostrar_inventario(inventario)
-
-    elif opcion == 3:
+    elif option == 3:
         clear_screen()
-        print("\n","="*30,"Buscar un producto","="*30,"\n")
-        nombre = input("Ingrese el nombre del producto: ")
-        producto = buscar_producto(inventario, nombre)
+        print("\n", "=" * 30, "Search product", "=" * 30, "\n")
 
-        if not producto:
-            print("\n","="*30,"Buscar un producto","="*30,"\n")
-            print("Producto no encontrado")
-            input("Presione enter para volver al menu")
+        name = input("Enter product name: ")
+        product = search_product(inventory, name)
+
+        if not product:
+            print("\n", "=" * 30, "Search product", "=" * 30, "\n")
+            print("Product not found")
+            input("Press enter to return to menu")
             clear_screen()
 
-
-    elif opcion == 4:
+    elif option == 4:
         clear_screen()
-        print("\n","="*30,"Actualizar un producto","="*30,"\n")
-        nombre = input("Nombre del producto a actualizar: ")
+        print("\n", "=" * 30, "Update product", "=" * 30, "\n")
+
+        name = input("Product name to update: ")
 
         try:
-            precio = input("Nuevo precio (Enter para omitir): ")
-            cantidad = input("Nueva cantidad (Enter para omitir): ")
+            price = input("New price (Enter to skip): ")
+            quantity = input("New quantity (Enter to skip): ")
 
-            nuevo_precio = float(precio) if precio else None
-            nueva_cantidad = int(cantidad) if cantidad else None
+            new_price = float(price) if price else None
+            new_quantity = int(quantity) if quantity else None
+
         except ValueError:
-            print("\nDatos inválidos")
-            input("\nPresione enter para volver al menu")
+            print("\nInvalid data")
+            input("\nPress enter to return to menu")
             clear_screen()
             continue
 
-        actualizar_producto(inventario, nombre, nuevo_precio, nueva_cantidad)
+        update_product(inventory, name, new_price, new_quantity)
 
-    elif opcion == 5:
+    elif option == 5:
         clear_screen()
-        print("\n","="*30,"Eliminar un producto","="*30,"\n")
-        nombre = input("Nombre del producto a eliminar: ")
-        eliminar_producto(inventario, nombre)
+        print("\n", "=" * 30, "Delete product", "=" * 30, "\n")
 
-    elif opcion == 6:
-        calcular_estadisticas(inventario)
+        name = input("Product name to delete: ")
+        delete_product(inventory, name)
 
-    elif opcion == 7:
+    elif option == 6:
+        calculate_stats(inventory)
+
+    elif option == 7:
         clear_screen()
-        print("\n","="*30,"Guardar CSV","="*30,"\n")
-        ruta = input("Ingrese el nombre del archivo (ej: inventario.csv): ")
-        if not ruta.endswith(".csv"):
-            ruta += ".csv"
-        guardar_csv(inventario, ruta)
+        print("\n", "=" * 30, "Save CSV", "=" * 30, "\n")
 
-    elif opcion == 8:
+        path = input("Enter file name (e.g., inventory.csv): ")
+        if not path.endswith(".csv"):
+            path += ".csv"
+
+        save_csv(inventory, path)
+
+    elif option == 8:
         clear_screen()
-        print("\n","="*30,"CARGAR CSV","="*30,"\n")
-        ruta = input("Ingrese la ruta del archivo CSV: ")
+        print("\n", "=" * 30, "LOAD CSV", "=" * 30, "\n")
 
-        nuevos_productos, errores = cargar_csv(ruta)
+        path = input("Enter CSV file path: ")
+        new_products, errors = read_csv(path)
 
-        if not nuevos_productos:
+        if not new_products:
             clear_screen()
-            print("\n","="*30,"CARGAR CSV","="*30,"\n")
-            print("No se cargaron productos")
-            input("\nPresione enter para volver al menu")
+            print("\n", "=" * 30, "LOAD CSV", "=" * 30, "\n")
+            print("No products loaded")
+            input("\nPress enter to return to menu")
             clear_screen()
             continue
 
-        decision = input("¿Sobrescribir inventario actual? (S/N): ").lower()
+        decision = input("Overwrite current inventory? (Y/N): ").lower()
 
-        if decision == "s":
-            inventario.clear()
-            inventario.extend(nuevos_productos)
-            print("Inventario reemplazado")
-            input("\nPresione enter para volver al menu")
+        if decision == "y":
+            inventory.clear()
+            inventory.extend(new_products)
+            print("Inventory replaced")
+            input("\nPress enter to return to menu")
             clear_screen()
 
-        
-        else:  
-            
-            for nuevo in nuevos_productos:
-                existente = buscar_producto(inventario, nuevo["nombre"])
+        else:
+            for new in new_products:
+                existing = search_product(inventory, new["nombre"])
 
-                if existente:
-                    existente["cantidad"] += nuevo["cantidad"]
-                    existente["precio"] = nuevo["precio"]
+                if existing:
+                    existing["quantity"] += new["quantity"]
+                    existing["precio"] = new["precio"]
                 else:
-                    inventario.append(nuevo)
-            print("\n","="*30,"CARGAR CSV","="*30,"\n")
-            print("Inventario fusionado")
+                    inventory.append(new)
 
-        print(f"\nProductos cargados: {len(nuevos_productos)}")
-        print(f"\nFilas inválidas: {errores}")
-        input("\nPresione enter para volver al menu")
+            print("\n", "=" * 30, "LOAD CSV", "=" * 30, "\n")
+            print("Inventory merged")
+
+        print(f"\nProducts loaded: {len(new_products)}")
+        print(f"\nInvalid rows: {errors}")
+        input("\nPress enter to return to menu")
         clear_screen()
 
-
-    elif opcion == 9:
+    elif option == 9:
         clear_screen()
-        print("\n","="*30,"Salir","="*30,"\n")
-        print("Saliendo del programa...")
-        active=False
+        print("\n", "=" * 30, "Exit", "=" * 30, "\n")
+        print("Exiting program...")
+        active = False

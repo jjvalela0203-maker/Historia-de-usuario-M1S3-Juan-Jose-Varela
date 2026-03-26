@@ -1,129 +1,146 @@
 """
-Módulo de persistencia en archivos CSV.
+CSV persistence module for the inventory management system.
 
-Permite guardar y cargar el inventario en un archivo CSV.
+This module provides functionality to save and load inventory data
+from CSV files. It ensures basic validation such as correct headers,
+data types, and non-negative values.
 """
+
 from services import clear_screen
 
-def guardar_csv(inventario, ruta, incluir_header=True):
+
+def save_csv(inventory, rute, incluir_header=True):
     """
-    Guarda el inventario en un archivo CSV.
+    Saves the inventory to a CSV file.
 
-    Parámetros:
-        inventario (list[dict]): lista de productos con estructura:
-        {"nombre": str, "precio": float, "cantidad": int}
-        ruta (str): ruta donde se guardará el archivo
-        incluir_header (bool): indica si se escribe el encabezado
+    Args:
+        inventory (list[dict]): List of products with structure:
+            {"name": str, "price": float, "quantity": int}
+        rute (str): File path where the CSV will be saved.
+        incluir_header (bool): Whether to include the header row.
 
-    Retorno:
+    Returns:
         None
     """
-    if not inventario:
-        print("No hay productos en el inventario para guardar.\n")
-        input("Presione enter para volver al menu")
+    # Check if inventory is empty
+    if not inventory:
+        print("No products in inventory to save.\n")
+        input("Press enter to return to menu")
         clear_screen()
         return
+
     try:
-        with open(ruta, "w", newline="", encoding="utf-8") as archivo:
+        # Open file in write mode
+        with open(rute, "w", newline="", encoding="utf-8") as archive:
+
+            # Write header if required
             if incluir_header:
-                archivo.write("nombre,precio,cantidad\n")
-            for producto in inventario:
-                linea = f"{producto['nombre']},{producto['precio']},{producto['cantidad']}\n"
-                archivo.write(linea)
-        print(f"Inventario guardado en: {ruta}\n")
-        input("Presione enter para volver al menu")
+                archive.write("name,price,quantity\n")
+
+            # Write each product as a CSV row
+            for product in inventory:
+                line = f"{product['name']},{product['price']},{product['quantity']}\n"
+                archive.write(line)
+
+        print(f"Inventory saved to: {rute}\n")
+        input("Press enter to return to menu")
         clear_screen()
 
     except PermissionError:
-        print("Error: No tienes permisos para escribir en esa ubicación.\n")
+        print("Error: You do not have permission to write in this location.\n")
+
     except FileNotFoundError:
-        print("Error: La ruta especificada no existe.\n")
+        print("Error: The specified path does not exist.\n")
+
     except Exception as e:
-        print(f"Ocurrió un error inesperado: {e}\n")
+        print(f"An unexpected error occurred: {e}\n")
 
-def cargar_csv(ruta):
+
+def read_csv(rute):
     """
-    Carga un archivo CSV y retorna una lista de productos válidos.
+    Loads a CSV file and returns a list of valid products.
 
-    Parámetros:
-        ruta (str): ruta del archivo CSV
+    Args:
+        rute (str): Path to the CSV file.
 
-    Retorno:
-        tuple: (lista_productos, filas_invalidas)
+    Returns:
+        tuple: (list_of_products, invalid_rows_count)
     """
-
-    inventario_cargado = []
-    filas_invalidas = 0
+    charge_inventory = []
+    invalid_lines = 0
 
     try:
-        with open(ruta, "r", encoding="utf-8") as archivo:
+        # Open file in read mode
+        with open(rute, "r", encoding="utf-8") as archive:
 
-            # Leer todas las líneas
-            lineas = archivo.readlines()
+            # Read all lines
+            lines = archive.readlines()
 
-            # Validar archivo vacío
-            if not lineas:
-                print("El archivo está vacío")
-                input("\nPresione enter para volver al menu")
+            # Validate empty file
+            if not lines:
+                print("The file is empty")
+                input("\nPress enter to return to menu")
                 clear_screen()
                 return [], 0
 
-            # Validar encabezado
-            encabezado = lineas[0].strip()
-            if encabezado != "nombre,precio,cantidad":
-                print("Encabezado inválido")
-                input("\nPresione enter para volver al menu")
+            # Validate header
+            header = lines[0].strip()
+            if header != "name,price,quantity":
+                print("Invalid header")
+                input("\nPress enter to return to menu")
                 clear_screen()
                 return [], 0
 
-            # Procesar filas
-            for linea in lineas[1:]:
-                partes = linea.strip().split(",")
+            # Process rows
+            for line in lines[1:]:
+                partes = line.strip().split(",")
 
-                # Validar columnas
+                # Validate column count
                 if len(partes) != 3:
-                    filas_invalidas += 1
+                    invalid_lines += 1
                     continue
 
-                nombre, precio, cantidad = partes
+                name, price, quantity = partes
 
                 try:
-                    precio = float(precio)
-                    cantidad = int(cantidad)
+                    price = float(price)
+                    quantity = int(quantity)
 
-                    # Validar negativos
-                    if precio < 0 or cantidad < 0:
-                        filas_invalidas += 1
+                    # Validate non-negative values
+                    if price < 0 or quantity < 0:
+                        invalid_lines += 1
                         continue
 
-                    producto = {
-                        "nombre": nombre,
-                        "precio": precio,
-                        "cantidad": cantidad
+                    # Create product dictionary
+                    product = {
+                        "name": name,
+                        "price": price,
+                        "quantity": quantity
                     }
 
-                    inventario_cargado.append(producto)
+                    charge_inventory.append(product)
 
                 except ValueError:
-                    filas_invalidas += 1
+                    # Invalid data type
+                    invalid_lines += 1
                     continue
 
-        return inventario_cargado, filas_invalidas
+        return charge_inventory, invalid_lines
 
     except FileNotFoundError:
-        print("Error: El archivo no existe")
-        input("\nPresione enter para volver al menu")
+        print("Error: File not found")
+        input("\nPress enter to return to menu")
         clear_screen()
         return [], 0
 
     except UnicodeDecodeError:
-        print("Error: Problema de codificación del archivo")
-        input("\nPresione enter para volver al menu")
+        print("Error: File encoding issue")
+        input("\nPress enter to return to menu")
         clear_screen()
         return [], 0
 
     except Exception as e:
-        print(f"Error inesperado: {e}")
-        input("\nPresione enter para volver al menu")
+        print(f"Unexpected error: {e}")
+        input("\nPress enter to return to menu")
         clear_screen()
         return [], 0

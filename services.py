@@ -1,148 +1,237 @@
-""" 
-Módulo de inventario.
+"""
+Services module.
 
-Permite agregar productos al inventario y mostrarlos en pantalla.
-Cada producto contiene nombre, precio y cantidad.
+This module provides functions to manage an inventory system.
+It allows adding, displaying, searching, updating, and deleting
+products, as well as calculating inventory statistics.
+
+Each product contains a name, price, and quantity.
 """
 import os
 
+
 def clear_screen():
+    """
+    Clears the terminal screen depending on the operating system.
+
+    Uses 'cls' for Windows and 'clear' for Unix-based systems.
+    """
     if os.name == "nt":
         os.system("cls")
     else:
         os.system("clear")
 
-def agregar_producto(inventario, nombre, precio, cantidad):
-    producto = {
-        "nombre": nombre,
-        "precio": precio,
-        "cantidad": cantidad
+
+def add_product(inventory, name, price, quantity):
+    """
+    Adds a new product to the inventory.
+
+    Args:
+        inventory (list): List containing all products.
+        name (str): Name of the product.
+        price (float): Price of the product.
+        quantity (int): Quantity of the product.
+
+    Returns:
+        None
+    """
+    # Create product dictionary
+    product = {
+        "name": name,
+        "price": price,
+        "quantity": quantity
     }
 
-    inventario.append(producto)
-    print("\nProducto agregado correctamente")
-    input("\nPresione enter para volver al menu")
+    # Add product to inventory
+    inventory.append(product)
+
+    print("\nProduct added successfully")
+    input("\nPress enter to return to menu")
     clear_screen()
 
-def mostrar_inventario (inventario):
-    """Muestra todos los productos almacenados en el inventario"""
 
-    if not inventario:
-        print("No hay nada en el inventario")
-        input("\nPresione enter para volver al menu")
+def show_inventory(inventory):
+    """
+    Displays all products stored in the inventory.
+
+    Args:
+        inventory (list): List of product dictionaries.
+
+    Returns:
+        None
+    """
+    if not inventory:
+        # Handle empty inventory case
+        print("Inventory is empty")
+        input("\nPress enter to return to menu")
         clear_screen()
     else:
-        print("\n--- INVENTARIO ---\n")
-        for producto_registrado in inventario:
-            print("\nProducto:", producto_registrado["nombre"],
-            "|Precio:", producto_registrado["precio"], 
-            "|Cantidad:", producto_registrado["cantidad"],"\n")
-        input("\nPresione enter para volver al menu")
+        print("\n--- INVENTORY ---\n")
+
+        # Iterate through all registered products
+        for producto_registrado in inventory:
+            print(
+                "\nProduct:", producto_registrado["name"],
+                "| Price:", producto_registrado["price"],
+                "| Quantity:", producto_registrado["quantity"], "\n"
+            )
+
+        input("\nPress enter to return to menu")
         clear_screen()
 
-def buscar_producto(inventario, nombre):
-    for producto in inventario:
-        if producto["nombre"].lower() == nombre.lower():
-            print(f"\nProducto encontrado: {producto}")
-            input("\npresione enter para volver al menu")
+
+def search_product(inventory, name):
+    """
+    Searches for a product by name.
+
+    Args:
+        inventory (list): List of product dictionaries.
+        name (str): Name of the product to search.
+
+    Returns:
+        dict | None: The found product if it exists, otherwise None.
+    """
+    # Iterate through inventory to find matching product
+    for product in inventory:
+        if product["name"].lower() == name.lower():
+            print(f"\nProduct found: {product}")
+            input("\nPress enter to return to menu")
             clear_screen()
-            return producto
-    else:
-        clear_screen()
-        return None
+            return product
 
-def actualizar_producto(inventario, nombre, nuevo_precio=None, nueva_cantidad=None):
-    producto = buscar_producto(inventario, nombre)
-    if producto is None:
-        print("\n","="*30,"Actualizar un producto","="*30,"\n")
-        print("Producto no encontrado")
-        input("\nPresione enter para volver al menu")
+    # If no product is found
+    clear_screen()
+    return None
+
+
+def update_product(inventory, name, new_price=None, new_quantity=None):
+    """
+    Updates the price and/or quantity of an existing product.
+
+    Args:
+        inventory (list): List of product dictionaries.
+        name (str): Name of the product to update.
+        new_price (float, optional): New price value.
+        new_quantity (int, optional): New quantity value.
+
+    Returns:
+        None
+    """
+    # Search for the product
+    product = search_product(inventory, name)
+
+    if product is None:
+        print("\n", "=" * 30, "Update product", "=" * 30, "\n")
+        print("Product not found")
+        input("\nPress enter to return to menu")
         clear_screen()
         return
-    if nuevo_precio is not None:
-        producto["precio"] = nuevo_precio
-    if nueva_cantidad is not None:
-        producto["cantidad"] = nueva_cantidad
-    print("\n","="*30,"Actualizar un producto","="*30,"\n")
-    print("Producto actualizado")
-    input("\nPresione enter para volver al menu")
+
+    # Update values only if provided
+    if new_price is not None:
+        product["price"] = new_price
+
+    if new_quantity is not None:
+        product["quantity"] = new_quantity
+
+    print("\n", "=" * 30, "Update product", "=" * 30, "\n")
+    print("Product updated")
+    input("\nPress enter to return to menu")
     clear_screen()
 
 
-def eliminar_producto(inventario, nombre):
-    for i, producto in enumerate(inventario):
-        if producto["nombre"].lower() == nombre.lower():
-            inventario.pop(i)
-            print("\nProducto eliminado")
-            input("\nPresione enter para volver al menu")
+def delete_product(inventory, name):
+    """
+    Removes a product from the inventory.
+
+    Args:
+        inventory (list): List of product dictionaries.
+        name (str): Name of the product to remove.
+
+    Returns:
+        None
+    """
+    # Iterate with index to safely remove items
+    for i, product in enumerate(inventory):
+        if product["name"].lower() == name.lower():
+            inventory.pop(i)
+            print("\nProduct removed")
+            input("\nPress enter to return to menu")
             clear_screen()
             return
-    else:
-        print("Producto no encontrado")
-        input("\nPresione enter para volver al menu")
-        clear_screen()
 
-def calcular_estadisticas(inventario):
+    # If product is not found
+    print("Product not found")
+    input("\nPress enter to return to menu")
+    clear_screen()
+
+
+def calculate_stats(inventory):
     """
-    Calcula y muestra estadísticas del inventario.
+    Calculates and displays inventory statistics.
 
-    Parámetros:
-        inventario (list[dict]): lista de productos.
-            Cada producto debe tener las claves:
-            - "nombre" (str)
-            - "precio" (float)
-            - "cantidad" (int)
+    Args:
+        inventory (list[dict]): List of products.
+            Each product must contain:
+            - "name" (str)
+            - "price" (float)
+            - "quantity" (int)
 
-    Retorno:
-        dict | None: diccionario con las métricas calculadas si hay productos;
-        en caso contrario, retorna None.
+    Returns:
+        dict | None: Dictionary with calculated metrics if inventory
+        is not empty, otherwise None.
     """
     clear_screen()
-    print("\n","="*30,"ESTADÍSTICAS DEL INVENTARIO","="*30,"\n")
-    if not inventario:
-        print("No hay productos para calcular estadísticas.\n")
-        input("\nPresione enter para volver al menu")
+    print("\n", "=" * 30, "INVENTORY STATISTICS", "=" * 30, "\n")
+
+    # Handle empty inventory
+    if not inventory:
+        print("No products available to calculate statistics.\n")
+        input("\nPress enter to return to menu")
         clear_screen()
         return None
-    
 
+    # Lambda to calculate subtotal per product
+    subtotal = lambda p: p["price"] * p["quantity"]
 
-    # Lambda para calcular el subtotal de cada producto
-    subtotal = lambda p: p["precio"] * p["cantidad"]
+    # Calculate totals
+    total_units = sum(product["quantity"] for product in inventory)
+    total_value = sum(subtotal(product) for product in inventory)
 
-    unidades_totales = sum(producto["cantidad"] for producto in inventario)
-    valor_total = sum(subtotal(producto) for producto in inventario)
+    # Find most expensive product and highest stock product
+    most_expensive = max(inventory, key=lambda p: p["price"])
+    highest_stock = max(inventory, key=lambda p: p["quantity"])
 
-    producto_mas_caro = max(inventario, key=lambda p: p["precio"])
-    producto_mayor_stock = max(inventario, key=lambda p: p["cantidad"])
-
-    estadisticas = {
-        "unidades_totales": unidades_totales,
-        "valor_total": valor_total,
-        "producto_mas_caro": {
-            "nombre": producto_mas_caro["nombre"],
-            "precio": producto_mas_caro["precio"],
+    # Store results in a dictionary
+    stats = {
+        "total_units": total_units,
+        "total_value": total_value,
+        "most_expensive": {
+            "name": most_expensive["name"],
+            "price": most_expensive["price"],
         },
-        "producto_mayor_stock": {
-            "nombre": producto_mayor_stock["nombre"],
-            "cantidad": producto_mayor_stock["cantidad"],
+        "highest_stock": {
+            "name": highest_stock["name"],
+            "quantity": highest_stock["quantity"],
         },
     }
 
+    # Display results
     clear_screen()
-    print("\n","="*30,"ESTADÍSTICAS DEL INVENTARIO","="*30,"\n")
-    print(f"Productos registrados: {len(inventario)}")
-    print(f"Unidades totales: {unidades_totales}")
-    print(f"Valor total del inventario: ${valor_total:,.2f}")
+    print("\n", "=" * 30, "INVENTORY STATISTICS", "=" * 30, "\n")
+    print(f"Registered products: {len(inventory)}")
+    print(f"Total units: {total_units}")
+    print(f"Total inventory value: ${total_value:,.2f}")
     print(
-        f"Producto más caro: {producto_mas_caro['nombre']} "
-        f"(${producto_mas_caro['precio']:,.2f})"
+        f"Most expensive product: {most_expensive['name']} "
+        f"(${most_expensive['price']:,.2f})"
     )
     print(
-        f"Producto con mayor stock: {producto_mayor_stock['nombre']} "
-        f"({producto_mayor_stock['cantidad']} unidades)\n"
+        f"Highest stock product: {highest_stock['name']} "
+        f"({highest_stock['quantity']} units)\n"
     )
-    input("\nPresione enter para volver al menu")
+
+    input("\nPress enter to return to menu")
     clear_screen()
 
-    return estadisticas
+    return stats
