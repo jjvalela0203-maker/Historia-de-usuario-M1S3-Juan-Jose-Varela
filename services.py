@@ -191,12 +191,9 @@ def calculate_stats(inventory):
         clear_screen()
         return None
 
-    # Lambda to calculate subtotal per product
-    subtotal = lambda p: p["price"] * p["quantity"]
-
     # Calculate totals
     total_units = sum(product["quantity"] for product in inventory)
-    total_value = sum(subtotal(product) for product in inventory)
+    total_value = sum(p["price"] * p["quantity"] for p in inventory)
 
     # Find most expensive product and highest stock product
     most_expensive = max(inventory, key=lambda p: p["price"])

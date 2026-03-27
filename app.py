@@ -181,11 +181,11 @@ while active:
 
         else:
             for new in new_products:
-                existing = search_product(inventory, new["nombre"])
+                existing = search_product(inventory, new["name"])
 
                 if existing:
                     existing["quantity"] += new["quantity"]
-                    existing["precio"] = new["precio"]
+                    existing["price"] = new["price"]
                 else:
                     inventory.append(new)
 
