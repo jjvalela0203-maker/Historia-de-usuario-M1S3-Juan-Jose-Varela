@@ -1,126 +1,139 @@
-# User History M1S2 📦 Inventory Management System (Python)
+# 📦 Inventory Management System (Python CLI)
 
-## 📌 Overview
+## 📖 Description
 
-This project is a simple inventory management system developed in Python.
-It allows users to register multiple products, display the inventory, and calculate basic statistics using a menu-driven interface.
+This is a Command Line Interface (CLI) Inventory Management System built in Python.  
+It allows users to manage products efficiently by performing CRUD operations (Create, Read, Update, Delete), as well as saving and loading data using CSV files.
 
-The program applies fundamental programming concepts such as:
-
-* Control flow (`if`, `elif`, `else`)
-* Loops (`while`, `for`)
-* Lists and dictionaries
-* Modular programming (separate files for logic)
+The system is modularized into multiple files to ensure clean code structure, readability, and scalability.
 
 ---
 
-## 🎯 Features
+## 🚀 Features
 
-* Add new products to the inventory
-* Display all stored products
-* Calculate inventory statistics
-* Input validation to prevent runtime errors
-* Interactive menu that runs until the user exits
-
----
-
-## 🧱 Project Structure
-
-```
-project/
-│
-├── main.py                  # Main program (menu and flow control)
-├── modulo_inventario.py    # Inventory management functions
-├── modulo_estadisticas.py  # Inventory statistics calculations
-├── validaciones.py         # Input validation functions
-└── README.md               # Project documentation
-```
+- Add new products  
+- Display full inventory  
+- Search products by name  
+- Update product details (price and quantity)  
+- Delete products  
+- View inventory statistics:
+  - Total number of products  
+  - Total units  
+  - Total inventory value  
+  - Most expensive product  
+  - Product with highest stock  
+- Save inventory to CSV  
+- Load inventory from CSV (with validation)  
 
 ---
 
-## 🛠️ How It Works
-
-### 1. Add Product
-
-The user enters:
-
-* Product name
-* Price
-* Quantity
-
-Each product is stored as a dictionary:
+## 🗂️ Project Structure
 
 ```
-{"nombre": "Product", "precio": 1000, "cantidad": 5}
+.
+├── app.py         # Main program (menu and execution flow)
+├── services.py    # Business logic (CRUD operations & statistics)
+├── archives.py    # CSV persistence (save & load data)
+└── README.md
 ```
 
 ---
 
-### 2. Show Inventory
+## ⚙️ Requirements
 
-Displays all products using a loop in the format:
-
-```
-Product: Laptop | Price: 2000 | Quantity: 3
-```
-
----
-
-### 3. Calculate Statistics
-
-The system calculates:
-
-* Total inventory value (price × quantity)
-* Total number of products registered
-* Total number of units
-
----
-
-### 4. Menu System
-
-The program runs inside a `while` loop until the user selects the exit option.
-
----
-
-## 🧪 Input Validation
-
-The system prevents invalid inputs such as:
-
-* Empty product names
-* Negative or zero values
-* Non-numeric input for price or quantity
-* Invalid menu options
+- Python 3.x  
+- No external libraries required (only standard library)
 
 ---
 
 ## ▶️ How to Run
 
-1. Make sure you have Python installed (Python 3 recommended)
-2. Open a terminal in the project folder
-3. Run:
+1. Clone this repository or download the files:
 
+```bash
+git clone <your-repo-url>
+cd <your-project-folder>
 ```
-python main.py
+
+2. Run the program:
+
+```bash
+python app.py
 ```
 
 ---
 
-## 🧠 Concepts Applied
+## 🧠 How It Works
 
-* Functions and modular design
-* Data structures (lists and dictionaries)
-* Error handling (`try/except`)
-* User input validation
-* Loop control and menu systems
+The program runs in a loop displaying an interactive menu where the user selects options from 1 to 9:
+
+| Option | Action |
+|--------|--------|
+| 1 | Add product |
+| 2 | Show inventory |
+| 3 | Search product |
+| 4 | Update product |
+| 5 | Delete product |
+| 6 | Show statistics |
+| 7 | Save to CSV |
+| 8 | Load from CSV |
+| 9 | Exit |
 
 ---
 
-## 📌 Weekly Objective
+## 📁 CSV Format
 
-The goal of this project was to practice control structures and data handling in Python by building a functional and interactive inventory system.
+The system uses a strict CSV format:
+
+```
+name,price,quantity
+Laptop,1500,5
+Mouse,25,10
+```
+
+### ✔️ Validation Rules:
+- Must include header: `name,price,quantity`
+- Price must be a float ≥ 0  
+- Quantity must be an integer ≥ 0  
+- Invalid rows are automatically ignored and counted  
+
+---
+
+## 🛡️ Error Handling
+
+The system includes basic error handling for:
+- Invalid user input  
+- File not found  
+- Permission errors  
+- Incorrect CSV format  
+- Invalid data types  
+
+---
+
+## 🧩 Design Highlights
+
+- Modular architecture (separation of concerns)  
+- Reusable functions  
+- Input validation  
+- User-friendly CLI interface  
+- Cross-platform screen clearing  
+
+---
+
+## 📌 Future Improvements
+
+- Add product categories  
+- Implement persistent database (SQLite)  
+- Add user authentication  
+- Improve UI (GUI or web version)  
 
 ---
 
 ## 👨‍💻 Author: Juan Jose Varela
 
-Developed as part of a programming practice assignment.
+Developed as a Python practice project focused on:
+- File handling  
+- Modular programming  
+- Clean code practices  
+- CLI interaction  
+---
