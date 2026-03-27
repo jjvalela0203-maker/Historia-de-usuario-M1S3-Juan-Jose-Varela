@@ -65,7 +65,12 @@ while active:
             option = int(input("Select an option: "))
             if 1 <= option <= 9:
                 valid = False
-
+            else:
+                clear_screen()
+                print("\n", "=" * 30, "MENU", "=" * 30, "\n")
+                print("\nError: Invalid input. Please enter a valid number.")
+                input("\nPress enter to retry...")
+                clear_screen()
         except ValueError:
             clear_screen()
             print("\n", "=" * 30, "MENU", "=" * 30, "\n")
